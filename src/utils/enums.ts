@@ -1,3 +1,4 @@
 export const enum EEventTypes {
-  TIME = 'time'
+  TIME = 'time',
+  SONG_END = 'songEnd'
 }
