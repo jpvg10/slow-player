@@ -26,5 +26,5 @@ createPlayer(filePath)
     }, 10000);
   })
   .catch((error: any) => {
-    console.log('Error:', error);
+    console.log(error);
   });

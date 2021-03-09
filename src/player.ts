@@ -45,9 +45,9 @@ const openFile = (filePath: string): Promise<number> => {
 };
 
 export const createPlayer = async (filePath: string): Promise<IPlayer> => {
-  let playProcess: ChildProcess | null = null;
   const events = new EventEmitter();
   const songLength = await openFile(filePath);
+  let playProcess: ChildProcess | null = null;
 
   const pause = () => {
     if (playProcess) {
@@ -57,6 +57,18 @@ export const createPlayer = async (filePath: string): Promise<IPlayer> => {
   };
 
   const play = (speedFactor: number = 1, startTime: string = '00:00') => {
+    if (speedFactor < 0.5 || speedFactor > 1) {
+      throw new Error('speedFactor must be between 0.5 and 1');
+    }
+
+    let t = timestampToSeconds(startTime);
+    if (t > songLength) {
+      events.emit(EEventTypes.SONG_END);
+      return;
+    }
+
+    events.emit(EEventTypes.TIME, t);
+
     playProcess = spawn(
       ffplayPath,
       [filePath, '-af', `atempo=${speedFactor}`, '-ss', startTime, '-loglevel', 'error', '-nodisp'],
@@ -66,9 +78,6 @@ export const createPlayer = async (filePath: string): Promise<IPlayer> => {
     /* playProcess.stderr?.on('data', (data: Buffer) => {
       console.log(data.toString());
     }); */
-
-    let t = timestampToSeconds(startTime);
-    events.emit(EEventTypes.TIME, t);
 
     const timer = setInterval(() => {
       t++;
@@ -80,8 +89,7 @@ export const createPlayer = async (filePath: string): Promise<IPlayer> => {
       }
     }, 1000 / speedFactor);
 
-    playProcess.on('close', (code: number) => {
-      // console.log(`child process exited with code ${code}`);
+    playProcess.on('close', (_code: number) => {
       clearInterval(timer);
     });
   };
