@@ -5,7 +5,7 @@
   "main": "client.js",
   "scripts": {
     "build": "tsc",
-    "start": "tsc && node ./build/src/client.js",
+    "start": "tsc && node ./build/client.js",
     "test": "jest"
   },
   "keywords": [],
