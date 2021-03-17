@@ -6,8 +6,8 @@ import { EEventTypes } from './utils/enums';
 import { timestampToSeconds } from './utils/helpers';
 import { IPlayer } from './utils/interfaces';
 
-const ffplayPath = join('bin', 'ffplay.exe');
-const ffprobePath = join('bin', 'ffprobe.exe');
+const ffplayPath = join(process.cwd(), 'dist', 'bin', 'ffplay.exe');
+const ffprobePath = join(process.cwd(), 'dist', 'bin', 'ffprobe.exe');
 
 const openFile = (filePath: string): Promise<number> => {
   return new Promise((resolve, reject) => {
@@ -26,7 +26,9 @@ const openFile = (filePath: string): Promise<number> => {
     });
 
     probeProcess.stdout?.on('end', () => {
-      parsedOutput = JSON.parse(output) as any;
+      try {
+        parsedOutput = JSON.parse(output) as any;
+      } catch {}
     });
 
     probeProcess.stderr?.on('data', (data: Buffer) => {

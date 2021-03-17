@@ -2,6 +2,7 @@ const path = require('path');
 const webpack = require('webpack');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const CopyPlugin = require('copy-webpack-plugin');
 
 module.exports = (env, argv) => {
   const config = {
@@ -42,7 +43,12 @@ module.exports = (env, argv) => {
         }
       ]
     },
-    plugins: [new CleanWebpackPlugin()],
+    plugins: [
+      new CleanWebpackPlugin(),
+      new CopyPlugin({
+        patterns: [{ from: 'node_modules/slow-player-core/dist/bin', to: 'bin' }]
+      })
+    ],
     resolve: {
       extensions: ['.tsx', '.ts', '.js', '.jsx', '.json']
     }

@@ -1,4 +1,5 @@
 node_modules/
-build/
-dist/
 *.mp3
+gui/dist/
+player/dist/**/*.ts
+player/dist/**/*.js
